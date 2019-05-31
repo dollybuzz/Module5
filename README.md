@@ -1,5 +1,6 @@
 # Module5
-CST 338
+CST 338: Software Design
+GUI Cards, extension of Module 3 Decks of Cards
 
 Delegation of tasks, proposed by Roger:
 Phase 1: Roger, completed Wednesday 5/29
