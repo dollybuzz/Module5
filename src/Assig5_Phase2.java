@@ -21,7 +21,7 @@ import javax.swing.border.*;
 import java.util.Random;
 
 
-public class Assig5_2
+public class Assig5
 {
    static int NUM_CARDS_PER_HAND = 7;
    static int NUM_PLAYERS = 2;
@@ -691,12 +691,12 @@ class Deck
    {
       if (numPacks <= 6)
       {
-         int i;
+         int card;
          topCard = 0;
 
-         for (i = 0; i < numPacks * DECK_SIZE; i++)
+         for (card = 0; card < numPacks * DECK_SIZE; card++)
          {
-            cards[i] = masterPack[i % DECK_SIZE];
+            cards[card] = masterPack[card % DECK_SIZE];
             topCard++;
          }
       }
