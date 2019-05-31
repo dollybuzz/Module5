@@ -21,7 +21,7 @@ import javax.swing.border.*;
 import java.util.Random;
 
 
-public class Assig5_2
+public class Assig5
 {
    static int NUM_CARDS_PER_HAND = 7;
    static int NUM_PLAYERS = 2;
@@ -177,15 +177,15 @@ class GUICard
    {
       if (iconsLoaded)
          return;
-      for (int i = 0; i < iconCards.length; i++)
+      for (int cardValue = 0; cardValue < iconCards.length; cardValue++)
       {
-         for (int cardSuit = 0; cardSuit < iconCards[i].length; cardSuit++)
+         for (int cardSuit = 0; cardSuit < iconCards[cardValue].length; cardSuit++)
          {
             //numCard will return string at i value
             //numSuit will return suit at ii value
-            String filename = numCard(i) + numSuit(cardSuit) + ".gif";
+            String filename = numCard(cardValue) + numSuit(cardSuit) + ".gif";
             ImageIcon cardImage = new ImageIcon("images/" + filename);
-            iconCards[i][cardSuit] = cardImage;
+            iconCards[cardValue][cardSuit] = cardImage;
          }
       }
       //create final back card
