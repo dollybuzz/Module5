@@ -155,7 +155,7 @@ public class Assig5
 class Card
 {
    public enum Suit
-   {clubs, diamonds, hearts, spades, SPADES}
+   {clubs, diamonds, hearts, spades}
 
    public static char[] valuRanks = {'A', '2', '3', '4', '5', '6', '7', '8',
          '9', 'T', 'J', 'Q', 'K', 'X'};
@@ -419,11 +419,9 @@ class Hand
       }
       else
       {
-         Card badCard = new Card('0', Card.Suit.SPADES);
+         Card badCard = new Card('0', Card.Suit.spades);
          return badCard;
       }
-      
-      
    }
 
    /**
