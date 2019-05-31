@@ -201,7 +201,6 @@ class GUICard
       return cardValues[cardNum];
    }
 
-   //
    //Check
    static String numSuit(int suitNum)
    {
@@ -212,7 +211,6 @@ class GUICard
    }
 
    //Check
-
    private static int valueToInt(Card card)
    {
       return Card.valueOfCard(card);
@@ -222,14 +220,20 @@ class GUICard
    private static int suitToNum(Card card)
    {
       Card.Suit cardSuit = card.getSuit();
-      if (cardSuit == Card.Suit.spades)
-         return 0;
-      else if (cardSuit == Card.Suit.hearts)
-         return 1;
-      else if (cardSuit == Card.Suit.diamonds)
-         return 2;
-      else // It's clubs
-         return 3;
+
+      switch (cardSuit)
+      {
+         case SPADES:
+            return 0;
+         case HEARTS:
+            return 1;
+         case DIAMONDS:
+            return 2;
+         case CLUBS:
+            return 3;
+         default:
+            return -1;
+      }
    }
 
    public static Icon getIcon(Card card)
@@ -254,7 +258,7 @@ class GUICard
 class Card
 {
    public enum Suit
-   {clubs, diamonds, hearts, spades}
+   {CLUBS, DIAMONDS, HEARTS, SPADES}
 
    public static char[] valuRanks = {'A', '2', '3', '4', '5', '6', '7', '8',
          '9', 'T', 'J', 'Q', 'K', 'X'};
@@ -270,7 +274,7 @@ class Card
    public Card()
    {
       value = 'A';
-      suit = Suit.spades;
+      suit = Suit.SPADES;
    }
 
    /**
@@ -523,7 +527,7 @@ class Hand
       }
       else
       {
-         Card badCard = new Card('0', Card.Suit.spades);
+         Card badCard = new Card('0', Card.Suit.SPADES);
          return badCard;
       }
 
@@ -582,7 +586,7 @@ class Hand
    {
       if (k > numCards || k < 0)
       {
-         return new Card('0', Card.Suit.spades);
+         return new Card('0', Card.Suit.SPADES);
       }
       return myCards[k];
    }
@@ -606,7 +610,7 @@ class Hand
       if (numCards == 0) //error
       {
          //Creates a card that does not work
-         return new Card('M', Card.Suit.spades);
+         return new Card('M', Card.Suit.SPADES);
       }
       //Decreases numCards.
       Card card = myCards[cardIndex];
@@ -727,7 +731,7 @@ class Deck
          Card tempCard = cards[topCard];
          return tempCard;
       }
-      return new Card('-', Card.Suit.spades);
+      return new Card('-', Card.Suit.SPADES);
    }
 
    /**
@@ -752,7 +756,7 @@ class Deck
    {
       if (k > topCard)
       {
-         return new Card('0', Card.Suit.spades);
+         return new Card('0', Card.Suit.SPADES);
       }
 
       return cards[k];
@@ -777,25 +781,25 @@ class Deck
             {
                masterPack[masterPackIndex] =
                      new Card(cardValues.charAt(masterPackIndex % NUM_OF_VALUES),
-                           Card.Suit.spades);
+                           Card.Suit.SPADES);
             }
             if (masterPackIndex / NUM_OF_VALUES == 1)
             {
                masterPack[masterPackIndex] =
                      new Card(cardValues.charAt(masterPackIndex % NUM_OF_VALUES),
-                           Card.Suit.clubs);
+                           Card.Suit.CLUBS);
             }
             if (masterPackIndex / NUM_OF_VALUES == 2)
             {
                masterPack[masterPackIndex] =
                      new Card(cardValues.charAt(masterPackIndex % NUM_OF_VALUES),
-                           Card.Suit.hearts);
+                           Card.Suit.HEARTS);
             }
             if (masterPackIndex / NUM_OF_VALUES == 3)
             {
                masterPack[masterPackIndex] =
                      new Card(cardValues.charAt(masterPackIndex % NUM_OF_VALUES),
-                           Card.Suit.diamonds);
+                           Card.Suit.DIAMONDS);
             }
          }
       }
