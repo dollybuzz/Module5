@@ -1,157 +1,253 @@
-// Title:               Deck of Cards
-// Files:               Assig3.java
-// Semester:            Summer A, 2019
-//
-// Author:              Roger Terrill, George Blombach, Dalia Faria.
-//                      Abby Packham, Carlos Orduna
-// Email:               rchicasterrill@csumb.edu, gblombach@csumb.edu,
-//                      dfaria@csumb.edu, apackham@csumb.edu, corduna@csumb.edu
-// Lecturer's Name:     Jesse Cecil, M.S.
-// TA's Name:           Joseph Appleton
-// Lab Section:         CST 338
+/*
+ * Title:               GUI Cards Phase 2
+ * Files:               Assig5.java
+ * Semester:            Summer A, 2019
+ * Date:
+ *
+ * Author:              Roger Terrill, George Blombach, Dalia Faria,
+ *                      Abby Packham, Carlos Orduna
+ * Email:               rchicasterrill@csumb.edu, gblombach@csumb.edu,
+ *                      dfaria@csumb.edu, apackham@csumb.edu,
+ *                      cordunacorrales@csumb.edu
+ * Lecturer's Name:     Jesse Cecil, M.S.
+ * TA's Name:           Joseph Appleton
+ * Lab Section:         CST 338
+  */
 
 
-/*Implementing Professor suggested changes:
--You should set numCards to 0 in the resetHand().
--The takeCard() method should be returning a boolean according to the 
-state of the fullness of the hand. Yours returns true all of the time,
-which defeats the purpose.
--playCard() should  check for no more cards in the hand and then 
-do something like return a bad card.
--inspectCard() should validate k according to how many cards are in 
-the myCards array.
--init() should validate numPacks.
-*/
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import java.util.Random;
 
-import java.util.Scanner;
 
-/**
- * Main working class that utilizes the card class to build card objects
- */
 public class Assig5
 {
+   static int NUM_CARDS_PER_HAND = 7;
+   static int  NUM_PLAYERS = 2;
+   static JLabel[] computerLabels = new JLabel[NUM_CARDS_PER_HAND];
+   static JLabel[] humanLabels = new JLabel[NUM_CARDS_PER_HAND]; 
+   static JLabel[] playedCardLabels  = new JLabel[NUM_PLAYERS];
+   static JLabel[] playLabelText  = new JLabel[NUM_PLAYERS];
 
-   /**
-    * Purpose: Initialize cards and display there values.
-    * Preconditions: Requires access to the Card class.
-    * Postconditions: Prints out card values.
-    */
    public static void main(String[] args)
    {
+      
+      int k;
+      Icon tempIcon;
+      
+      //Load Icons for cards from GUICard class
+      GUICard.loadCardIcons();
+      
+      // establish main frame in which program will run
+      CardTable myCardTable 
+         = new CardTable("CardTable", NUM_CARDS_PER_HAND, NUM_PLAYERS);
+      myCardTable.setSize(800, 600);
+      myCardTable.setLocationRelativeTo(null);
+      myCardTable.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-      //********Phase 4************/
-      Scanner keyboard = new Scanner(System.in);
-      int i;
+      // show everything to the user
+      //myCardTable.setVisible(true); Repeated setVisible method. Omitted
 
-      // Check to make sure a valid number is entered
-      int chooseNumPacks = 0;
-      while (chooseNumPacks < 1 || chooseNumPacks > 10)
+      // CREATE LABELS ----------------------------------------------------
+      for(k = 0; k < NUM_CARDS_PER_HAND; k++)
       {
-         System.out.print("How many hands? (1 - 10), please: ");
-         chooseNumPacks = keyboard.nextInt();
+         //give the Computer a back card Label
+          computerLabels[k] = new JLabel(GUICard.getBackcardIcon());
+          
+          //give Human a random Card Label
+          tempIcon = GUICard.getIcon(generateRandomCard());
+          humanLabels[k] = new JLabel(tempIcon);
       }
-
-      // Initialize a hand
-      Hand[] hands = new Hand[chooseNumPacks];
-
-      // Initialize a new single deck
-      Deck newDeck = new Deck();
-
-      // Initialize each number of players hands
-      for (i = 0; i < chooseNumPacks; i++)
+      
+      // ADD LABELS TO PANELS -----------------------------------------
+      for(k = 0; k < NUM_CARDS_PER_HAND; k++)
       {
-         hands[i] = new Hand();
+         //add indexed label to Computer panel
+         myCardTable.pnlComputerHand.add(computerLabels[k]);
+         
+         //add indexed label to Human panel
+         myCardTable.pnlHumanHand.add(humanLabels[k]);
       }
-
-      // Deal each player a card
-      for (i = 0; i < Deck.DECK_SIZE; i++)
+      
+      
+      // and two random cards in the play region (simulating a computer/hum ply)
+      for(k = 0; k < NUM_PLAYERS; k++) 
       {
-         hands[i % chooseNumPacks].takeCard(newDeck.dealCard());
+         //getting random card
+         tempIcon = GUICard.getIcon(generateRandomCard());
+         //assigning 2 labels to playedCards
+         playedCardLabels[k] = new JLabel(tempIcon);
+         //adding labels to played area
+         myCardTable.pnlPlayArea.add(playedCardLabels[k]);
       }
-
-      // Show all players hands
-      for (i = 0; i < chooseNumPacks; i++)
-      {
-         hands[i].toString();
-         System.out.println();
-      }
-
-      // Reset all players hands
-      for (i = 0; i < chooseNumPacks; i++)
-      {
-         hands[i].resetHand();
-      }
-
-      System.out.println("Here are our hands, from SHUFFLED deck: ");
-      // Initialize deck to 1 pack
-      newDeck.init(1);
-
-      // Shuffle the deck of cards
-      newDeck.shuffle();
-
-      // Deal all the cards
-      for (i = 0; i < Deck.DECK_SIZE; i++)
-      {
-         hands[i % chooseNumPacks].takeCard(newDeck.dealCard());
-      }
-
-      // Display each hand
-      for (i = 0; i < chooseNumPacks; i++)
-      {
-         hands[i].toString();
-         System.out.println();
-      }
-
-      // Testing the sort method in the Card Class
-      hands[0].sort();
-//      hands[1].sort();
-
-      for (i = 0; i < chooseNumPacks; i++)
-      {
-         hands[i].toString();
-         System.out.println();
-      }
-
-
-      // Initialize a new single deck to test GUI additions
-      Deck guiDeck = new Deck(3);
-
-      Card newCard = new Card();
-
-
-      guiDeck.toString();
-      // Testing adding card
-      guiDeck.addCard(newCard);
-
-      // Testing removeCard, three ace of spades are created
-      // in the new pack so I remove the three and the 4th is false
-      // as there are no more Ace of Spades left
-      guiDeck.removeCard(newCard);
-      guiDeck.removeCard(newCard);
-      guiDeck.removeCard(newCard);
-      guiDeck.removeCard(newCard);
-
-      // Shows deck with removed Ace of Spades
-      guiDeck.toString();
-
-      // Sorts the remaining Cards
-      guiDeck.sort();
-
-      // Displays the sorted cards
-      guiDeck.toString();
-
-      // Add two Ace of Spades back
-      guiDeck.addCard(newCard);
-      guiDeck.addCard(newCard);
-
-      guiDeck.toString();
+      
+      
+      // show everything to the user
+      myCardTable.setVisible(true);
+      
    }
+   
+   //generate a random card to be given to a player
+   //-Currently can give repeated cards-
+   //-It's OK as this is only for testing purposes-
+   static Card generateRandomCard() 
+   {
+      Deck deck = new Deck();
+      Random randomGen = new Random();
+      return deck.inspectCard(randomGen.nextInt(deck.getNumCards()));
+  }
 }
 
-/**
- * A class that provides a card object and checks to see if the card
- * created has valid values.
- */
+/*****************************************************************************
+ *                        End of Assig5                                      *
+ *****************************************************************************/
+
+class CardTable extends JFrame
+{
+   //CardTable static data
+   static int MAX_CARDS_PER_HAND = 56;
+   static int MAX_PLAYERS = 2;
+   
+   //CardTable private data
+   private int numCardsPerHand;
+   private int numPlayers;
+   
+   //CardTable public data
+   //3 panels - One Computer player, One Human player, One play area
+   public JPanel pnlComputerHand, pnlHumanHand, pnlPlayArea;
+   
+   //Constructor and mutator - Adds panels to the JFrame 
+   CardTable(String title, int numCardsPerHand, int numPlayers)
+   {
+      //the string - title - will be displayed on the window frame.
+      super(title);
+      
+      //BorderLayout manager - BorderLayout(int horizontalGap, int verticalGap)
+      setLayout(new BorderLayout());
+      
+      //Sets values
+      this.numCardsPerHand = numCardsPerHand;
+      this.numPlayers = numPlayers;
+      
+      //GridLayout(int rows, int columns) 
+      //defines a panel for each field
+      pnlComputerHand = 
+            new JPanel(new GridLayout(1, numCardsPerHand));
+      pnlHumanHand = 
+            new JPanel(new GridLayout(1, numCardsPerHand));
+      pnlPlayArea = 
+            new JPanel(new GridLayout(2, numPlayers));
+      
+      //Place panels to their specific location
+      add(pnlComputerHand, BorderLayout.NORTH);
+      add(pnlHumanHand, BorderLayout.SOUTH);
+      add(pnlPlayArea, BorderLayout.CENTER); 
+      
+      //Names each section and places a border
+      pnlComputerHand.setBorder(new TitledBorder("Computer Hand"));
+      pnlHumanHand.setBorder(new TitledBorder("Playing Area"));
+      pnlPlayArea.setBorder(new TitledBorder("Your Hand"));
+      
+   }
+   
+   public int getNumCardsPerHand()
+   {
+      return numCardsPerHand;
+   }
+   
+   public int getNumPlayers()
+   {
+      return numPlayers;
+   }
+}
+/*****************************************************************************
+ *                        End of CardTable                                   *
+ *****************************************************************************/
+class GUICard
+{
+   //private static GUICard data
+   private static Icon[][] iconCards = new ImageIcon[14][4];
+   private static Icon iconBack;
+    
+   static boolean iconsLoaded = false;
+
+   static void loadCardIcons()
+   {
+       if (iconsLoaded)
+          return;
+       for (int i = 0; i < iconCards.length; i++)
+       {
+          for (int ii = 0; ii < iconCards[i].length; ii++)
+          {
+             //numCard will return string at i value
+             //numSuit will return suit at ii value
+             String filename = numCard(i) + numSuit(ii) + ".gif";
+             ImageIcon cardImage = new ImageIcon("images/" + filename);
+             iconCards[i][ii] = cardImage;
+          }
+       }
+       //create final back card
+       iconBack = new ImageIcon("images/BK.gif");
+       iconsLoaded = true;
+   }
+
+//  Changes integer to the card value
+   static String numCard(int cardNum)
+   {
+      String[] cardValues = {"A", "2", "3", "4", "5", "6",
+            "7", "8", "9", "T", "J", "Q", "K", "X"};
+      return cardValues[cardNum];
+   }
+//
+   //Check
+   static String numSuit(int suitNum)
+   {
+      if (suitNum < 0 || suitNum > 3)
+         return "invalid";
+      return Card.Suit.values()[suitNum]
+            .toString().toUpperCase().substring(0, 1);
+   }
+
+    //Check
+    
+   private static int valueToInt(Card card)
+   {
+      return Card.valueOfCard(card);
+   }
+
+    //Converts suit to number
+   private static int suitToNum(Card card)
+   {
+      Card.Suit cardSuit = card.getSuit();
+      if (cardSuit == Card.Suit.spades)
+         return 0;
+      else if (cardSuit == Card.Suit.hearts)
+         return 1;
+      else if (cardSuit == Card.Suit.diamonds)
+         return 2;
+      else // It's clubs
+         return 3;
+   }
+   public static Icon getIcon(Card card)
+   {
+      return iconCards[valueToInt(card)][suitToNum(card)];
+   }
+ 
+   public static Icon getBackcardIcon()
+   {
+      return iconBack;
+   }
+}
+/*****************************************************************************
+ *                        End of GUICard                                     *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Card - A class that provides a card object and checks to see if the card  *
+ * created has valid values.                                                 *
+ *****************************************************************************/   
+
 class Card
 {
    public enum Suit
@@ -192,7 +288,8 @@ class Card
     * Preconditions: Initialized card object.
     * Postconditions: Sets value for card object based on parameters.
     *
-    * @return Returns a String displaying the value and suit of card or illegal if a errorFlag is true
+    * @return Returns a String displaying the value and suit of card or illegal
+    * if a errorFlag is true
     */
    public String toString()
    {
@@ -331,7 +428,7 @@ class Card
    static int valueOfCard(Card card)
    {
 
-      // It traverses the valueRanks and check which matches the card value
+      // It traverses the valuRanks and check which matches the card value
       // Then it returns the index position as the value
       for (int value = 0; value < valuRanks.length; value++)
       {
@@ -343,11 +440,15 @@ class Card
       return -1;
    }
 }
+/*****************************************************************************
+ *                        End of Card                                        *
+ *****************************************************************************/
 
-/**
- * A class that provides a card object and checks to see if the card created
- * has valid values.
- */
+/*****************************************************************************
+ * Hand - A class that provides a card object and checks to see if the       * 
+ * card created has valid values.                                            *
+ *****************************************************************************/
+
 class Hand
 {
    public static final int MAX_CARDS = 100;
@@ -397,7 +498,7 @@ class Hand
       }
       return false;           
    }
-   
+
 
    /**
     * Purpose: Reduces number of cards in hand
@@ -422,6 +523,8 @@ class Hand
          Card badCard = new Card('0', Card.Suit.spades);
          return badCard;
       }
+
+
    }
 
    /**
@@ -516,11 +619,14 @@ class Hand
       return card;
    }
 }
+/*****************************************************************************
+ *                        End of Hand                                        *
+ *****************************************************************************/
 
-/**
- * A class that provides a card object and checks to see if the card
- * created has valid values.
- */
+/*****************************************************************************
+ * Deck - A class that provides a card object and checks to see if the card  *
+ * created has valid values.                                                 *
+ *****************************************************************************/
 class Deck
 {
    public static final int DECK_SIZE = 56;
@@ -580,7 +686,7 @@ class Deck
       {
          int i;
          topCard = 0;
-         
+
          for (i = 0; i < numPacks * DECK_SIZE; i++)
          {
             cards[i] = masterPack[i % DECK_SIZE];
@@ -802,31 +908,6 @@ class Deck
       return str;
    }
 }
-
-
-/*****************Output**************************
- * PHASE 3
- K of diamonds / Q of diamonds / J of diamonds / T of diamonds / 9 of diamonds /
- 8 of diamonds / 7 of diamonds / 6 of diamonds / 5 of diamonds / 4 of diamonds /
- 3 of diamonds / 2 of diamonds / A of diamonds / K of hearts / Q of hearts /
- J of hearts / T of hearts / 9 of hearts / 8 of hearts / 7 of hearts / 6 of hearts /
- 5 of hearts / 4 of hearts / 3 of hearts / 2 of hearts / A of hearts / K of clubs / Q of clubs / J of clubs / T of clubs / 9 of clubs / 8 of clubs / 7 of clubs / 6 of clubs / 5 of clubs / 4 of clubs / 3 of clubs / 2 of clubs / A of clubs / K of spades / Q of spades / J of spades / T of spades / 9 of spades / 8 of spades / 7 of spades / 6 of spades / 5 of spades / 4 of spades / 3 of spades / 2 of spades / A of spades /
- 3 of hearts / J of clubs / 9 of clubs / 4 of clubs / 6 of diamonds / 2 of hearts / 7 of diamonds / Q of spades / 8 of clubs / 7 of clubs / 4 of diamonds / Q of clubs / K of spades / 8 of hearts / J of spades / Q of clubs / 3 of diamonds / 5 of hearts / T of hearts / K of hearts / 6 of hearts / K of spades / T of spades / 3 of clubs / A of diamonds / 8 of spades / K of clubs / 5 of diamonds / 3 of spades / K of diamonds / T of diamonds / A of clubs / 5 of spades / J of hearts / 6 of spades / 3 of hearts / A of spades / 8 of clubs / 9 of spades / 8 of diamonds / 4 of hearts / 9 of clubs / 2 of clubs / T of diamonds / Q of diamonds / K of diamonds / 9 of diamonds / 7 of clubs / 8 of spades / J of diamonds / 3 of clubs / K of hearts /
- K of diamonds / Q of diamonds / J of diamonds / T of diamonds / 9 of diamonds / 8 of diamonds / 7 of diamonds / 6 of diamonds / 5 of diamonds / 4 of diamonds / 3 of diamonds / 2 of diamonds / A of diamonds / K of hearts / Q of hearts / J of hearts / T of hearts / 9 of hearts / 8 of hearts / 7 of hearts / 6 of hearts / 5 of hearts / 4 of hearts / 3 of hearts / 2 of hearts / A of hearts /
- A of spades / Q of hearts / 9 of hearts / 6 of spades / 5 of clubs / 7 of hearts / Q of spades / 3 of diamonds / J of diamonds / Q of diamonds / T of diamonds / 5 of hearts / K of diamonds / A of hearts / 8 of clubs / 5 of spades / 6 of clubs / 2 of spades / 4 of diamonds / 2 of diamonds / 9 of clubs / 6 of hearts / 3 of hearts / 9 of spades / 8 of hearts / 8 of diamonds /
- PHASE4
- How many hands? (1 - 10), please: 6
- Hand = ( K of diamonds, 7 of diamonds, A of diamonds, 8 of hearts, 2 of hearts, 9 of clubs, 3 of clubs, T of spades, 4 of spades )
- Hand = ( Q of diamonds, 6 of diamonds, K of hearts, 7 of hearts, A of hearts, 8 of clubs, 2 of clubs, 9 of spades, 3 of spades )
- Hand = ( J of diamonds, 5 of diamonds, Q of hearts, 6 of hearts, K of clubs, 7 of clubs, A of clubs, 8 of spades, 2 of spades )
- Hand = ( T of diamonds, 4 of diamonds, J of hearts, 5 of hearts, Q of clubs, 6 of clubs, K of spades, 7 of spades, A of spades )
- Hand = ( 9 of diamonds, 3 of diamonds, T of hearts, 4 of hearts, J of clubs, 5 of clubs, Q of spades, 6 of spades )
- Hand = ( 8 of diamonds, 2 of diamonds, 9 of hearts, 3 of hearts, T of clubs, 4 of clubs, J of spades, 5 of spades )
- Here are our hands, from SHUFFLED deck:
- Hand = ( A of diamonds, 4 of hearts, Q of hearts, 8 of diamonds, 5 of clubs, 9 of clubs, 5 of diamonds, K of spades, 2 of spades )
- Hand = ( 9 of diamonds, Q of spades, 5 of spades, Q of clubs, Q of diamonds, J of diamonds, 7 of hearts, T of diamonds, 6 of clubs )
- Hand = ( 4 of diamonds, 3 of hearts, 5 of hearts, J of spades, 6 of hearts, J of hearts, 7 of diamonds, 7 of spades, T of spades )
- Hand = ( 6 of spades, 3 of diamonds, 3 of clubs, 8 of clubs, A of spades, 2 of diamonds, K of clubs, J of clubs, 9 of hearts )
- Hand = ( 7 of clubs, K of hearts, 8 of spades, 4 of spades, 8 of hearts, 9 of spades, T of hearts, K of diamonds )
- Hand = ( 4 of clubs, A of hearts, A of clubs, 2 of clubs, 2 of hearts, 3 of spades, T of clubs, 6 of diamonds )
- **************************************************/
+/*****************************************************************************
+ *                        End of Deck                                        *
+ *****************************************************************************/
