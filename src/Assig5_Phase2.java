@@ -21,7 +21,7 @@ import javax.swing.border.*;
 import java.util.Random;
 
 
-public class Assig5
+public class Assig5_2
 {
    static int NUM_CARDS_PER_HAND = 7;
    static int NUM_PLAYERS = 2;
@@ -373,7 +373,7 @@ class Card
    public boolean equals(Card card)
    {
 
-      return (value == card.value && suit == card.suit);
+      return (value == card.value && suit == card.suit && errorFlag == card.errorFlag);
    }
 
    /**
